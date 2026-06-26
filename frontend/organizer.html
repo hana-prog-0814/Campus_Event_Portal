@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Organizer Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h2>🧑‍💼 Organizer Dashboard</h2>
+
+    <!-- CREATE EVENT -->
+    <div class="card">
+        <h3>Create Event</h3>
+
+        <input id="title" placeholder="Title">
+        <input id="description" placeholder="Description">
+        <input id="category" placeholder="Category">
+        <input id="date" type="date">
+        <input id="time" type="time">
+        <input id="venue" placeholder="Venue">
+        <input id="capacity" type="number" placeholder="Capacity">
+
+<button onclick="handleCreateEvent()">Create Event</button>
+    <!-- MY EVENTS -->
+    <div class="card">
+        <h3>My Events</h3>
+        <div id="myEvents"></div>
+    </div>
+
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+async function handleCreateEvent() {
+    console.log("BUTTON CLICKED");
+
+    const res = await fetch("http://localhost:3000/events", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            title: document.getElementById("title").value,
+            description: document.getElementById("description").value,
+            category: document.getElementById("category").value,
+            event_date: document.getElementById("date").value,
+            event_time: document.getElementById("time").value,
+            venue: document.getElementById("venue").value,
+            capacity: document.getElementById("capacity").value
+        })
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    loadMyEvents();
+}
+
+/* ---------------- LOAD MY EVENTS ---------------- */
+async function loadMyEvents() {
+
+    try {
+        const res = await fetch("http://localhost:3000/my-events", {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        const data = await res.json();
+
+        console.log("MY EVENTS RESPONSE:", data);
+
+        const events = Array.isArray(data.events) ? data.events : [];
+
+        let html = "";
+
+        events.forEach(e => {
+            html += `
+                <div class="card">
+                    <h3>${e.title}</h3>
+                    <p>${e.description}</p>
+                    <p>${e.event_date} | ${e.venue}</p>
+
+                    <button onclick="viewRegistrations(${e.id})">View Registrations</button>
+                    <button onclick="deleteEvent(${e.id})">Delete</button>
+                </div>
+            `;
+        });
+
+        document.getElementById("myEvents").innerHTML = html;
+
+    } catch (err) {
+        console.log("ERROR loading events:", err);
+    }
+}
+/* ---------------- VIEW REGISTRATIONS ---------------- */
+async function viewRegistrations(eventId) {
+
+    const res = await fetch(`http://localhost:3000/events/${eventId}/registrations`, {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await res.json();
+
+    let list = "";
+
+    data.registrations.forEach(r => {
+        list += `${r.name} - ${r.email} - ${r.phone}\n`;
+    });
+
+    alert(list || "No registrations yet");
+}
+
+/* ---------------- DELETE EVENT ---------------- */
+async function deleteEvent(id) {
+
+    const res = await fetch(`http://localhost:3000/admin/event/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    loadMyEvents();
+}
+
+loadMyEvents();
+</script>
+
+</body>
+</html>

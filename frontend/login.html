@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <button onclick="goRegister()">Register</button>
+
+<script>
+function goRegister() {
+    window.location.href = "register.html";
+}
+</script>
+</div>
+
+<script>
+async function login() {
+
+    const res = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: email.value,
+            password: password.value
+        })
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+        alert(data.message);
+        return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.user.role);
+
+    alert("Login successful");
+
+    // redirect based on role
+    if (data.user.role === "user") {
+        window.location.href = "index.html";
+    } else if (data.user.role === "organizer") {
+        window.location.href = "organizer.html";
+    } else {
+        window.location.href = "admin.html";
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h2>🛠 Admin Dashboard</h2>
+
+    <!-- STATS CARDS -->
+    <div class="card">
+        <h3>📊 System Overview</h3>
+
+        <button onclick="loadDashboard()">Load Stats</button>
+
+        <div id="stats"></div>
+    </div>
+
+    <!-- USERS -->
+    <div class="card">
+        <h3>👥 Users</h3>
+        <button onclick="loadUsers()">Load Users</button>
+        <div id="users"></div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="card">
+        <h3>📅 Events</h3>
+        <button onclick="loadEvents()">Load Events</button>
+        <div id="events"></div>
+    </div>
+
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+/* ---------------- DASHBOARD STATS ---------------- */
+async function loadDashboard() {
+
+    const res = await fetch("http://localhost:3000/admin/dashboard", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+        alert(data.message);
+        return;
+    }
+
+    document.getElementById("stats").innerHTML = `
+        <p>👥 Users: ${data.dashboard.totalUsers}</p>
+        <p>📅 Events: ${data.dashboard.totalEvents}</p>
+        <p>📝 Registrations: ${data.dashboard.totalRegistrations}</p>
+    `;
+}
+
+/* ---------------- LOAD USERS ---------------- */
+async function loadUsers() {
+
+    const res = await fetch("http://localhost:3000/admin/users", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await res.json();
+
+    let html = "";
+
+    data.users.forEach(u => {
+
+        html += `
+            <div class="card">
+                <p><b>${u.name}</b> (${u.role})</p>
+                <p>${u.email}</p>
+
+                <button onclick="deleteUser(${u.id})">
+                    Delete User
+                </button>
+            </div>
+        `;
+    });
+
+    document.getElementById("users").innerHTML = html;
+}
+
+/* ---------------- LOAD EVENTS ---------------- */
+async function loadEvents() {
+
+    const res = await fetch("http://localhost:3000/admin/events", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await res.json();
+
+    let html = "";
+
+    data.events.forEach(e => {
+
+        html += `
+            <div class="card">
+                <h4>${e.title}</h4>
+                <p>${e.description}</p>
+                <p>${e.event_date} | ${e.venue}</p>
+
+                <button onclick="deleteEvent(${e.id})">
+                    Delete Event
+                </button>
+            </div>
+        `;
+    });
+
+    document.getElementById("events").innerHTML = html;
+}
+
+/* ---------------- DELETE USER ---------------- */
+async function deleteUser(id) {
+
+    const res = await fetch(`http://localhost:3000/admin/user/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    loadUsers();
+}
+
+/* ---------------- DELETE EVENT ---------------- */
+async function deleteEvent(id) {
+
+    const res = await fetch(`http://localhost:3000/admin/event/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    loadEvents();
+}
+
+</script>
+
+</body>
+</html>
