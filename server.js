@@ -110,21 +110,11 @@ function isOrganizer(req, res, next) {
     next();
 }
 
-function isAdmin(req, res, next) {
-    if (req.user.role !== "admin") {
-        return res.status(403).json({
-            success: false,
-            message: "Admin access only"
-        });
-    }
-    next();
-}
+
 
 
 // Test Route
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend", "login.html"));
-});
+
 app.post("/register", async (req, res) => {
 
     const { name, email, password, role } = req.body;
@@ -799,8 +789,8 @@ app.delete("/admin/user/:id", verifyToken, isAdmin, (req, res) => {
         }
     );
 });
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
