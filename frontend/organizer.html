@@ -110,9 +110,9 @@ async function viewRegistrations(eventId) {
 
     let list = "";
 
-    data.registrations.forEach(r => {
-        list += `${r.name} - ${r.email} - ${r.phone}\n`;
-    });
+   data.registrations.forEach(r => {
+    list += `${r.name} - ${r.email} - ${r.phone} - ${r.department} - ${r.year}\n`;
+});
 
     alert(list || "No registrations yet");
 }
