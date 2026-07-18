@@ -774,6 +774,26 @@ app.delete("/admin/event/:id", verifyToken, isAdmin, (req, res) => {
         }
     );
 });
+
+app.delete("/admin/user/:id", verifyToken, isAdmin, (req, res) => {
+    db.query(
+        "DELETE FROM users WHERE id = ?",
+        [req.params.id],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: "User deletion failed"
+                });
+            }
+
+            res.json({
+                success: true,
+                message: "User deleted successfully"
+            });
+        }
+    );
+});
 const PORT = 3000;
 
 app.listen(PORT, () => {
