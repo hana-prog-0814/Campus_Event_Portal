@@ -64,7 +64,7 @@ async function handleCreateEvent() {
 async function loadMyEvents() {
 
     try {
-        const res = await fetch("http://localhost:3000/my-events", {
+        const res = await fetch("https://campus-event-portal-wjcw.onrender.com/my-events", {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -100,7 +100,7 @@ async function loadMyEvents() {
 /* ---------------- VIEW REGISTRATIONS ---------------- */
 async function viewRegistrations(eventId) {
 
-    const res = await fetch(`http://localhost:3000/events/${eventId}/registrations`, {
+    const res = await fetch(`https://campus-event-portal-wjcw.onrender.com/events/${eventId}/registrations`, {
         headers: {
             "Authorization": "Bearer " + token
         }
@@ -120,7 +120,7 @@ async function viewRegistrations(eventId) {
 /* ---------------- DELETE EVENT ---------------- */
 async function deleteEvent(id) {
 
-    const res = await fetch(`http://localhost:3000/admin/event/${id}`, {
+    const res = await fetch(`https://campus-event-portal-wjcw.onrender.com/admin/event/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": "Bearer " + token

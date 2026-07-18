@@ -64,7 +64,7 @@ async function loadDashboard() {
 /* ---------------- LOAD USERS ---------------- */
 async function loadUsers() {
 
-    const res = await fetch("http://localhost:3000/admin/users", {
+    const res = await fetch("https://campus-event-portal-wjcw.onrender.com/admin/users", {
         headers: {
             "Authorization": "Bearer " + token
         }
@@ -94,7 +94,7 @@ async function loadUsers() {
 /* ---------------- LOAD EVENTS ---------------- */
 async function loadEvents() {
 
-    const res = await fetch("http://localhost:3000/admin/events", {
+    const res = await fetch("https://campus-event-portal-wjcw.onrender.com/admin/events", {
         headers: {
             "Authorization": "Bearer " + token
         }
@@ -125,7 +125,7 @@ async function loadEvents() {
 /* ---------------- DELETE USER ---------------- */
 async function deleteUser(id) {
 
-    const res = await fetch(`http://localhost:3000/admin/user/${id}`, {
+    const res = await fetch(`https://campus-event-portal-wjcw.onrender.com/admin/user/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": "Bearer " + token
@@ -141,7 +141,7 @@ async function deleteUser(id) {
 /* ---------------- DELETE EVENT ---------------- */
 async function deleteEvent(id) {
 
-    const res = await fetch(`http://localhost:3000/admin/event/${id}`, {
+    const res = await fetch(`https://campus-event-portal-wjcw.onrender.com/admin/event/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": "Bearer " + token

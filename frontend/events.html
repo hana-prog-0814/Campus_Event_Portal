@@ -56,7 +56,7 @@ async function loadEvents() {
 // REGISTER FOR EVENT
 async function registerEvent(eventId) {
 
-    const res = await fetch(`http://localhost:3000/events/${eventId}/register`, {
+    const res = await fetch(`https://campus-event-portal-wjcw.onrender.com/events/${eventId}/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
