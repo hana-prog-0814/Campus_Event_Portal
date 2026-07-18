@@ -753,42 +753,111 @@ app.get("/admin/events", verifyToken, isAdmin, (req, res) => {
 
 app.delete("/admin/event/:id", verifyToken, isAdmin, (req, res) => {
 
+    const eventId = req.params.id;
+
     db.query(
-        "DELETE FROM events WHERE id = ?",
-        [req.params.id],
+        "DELETE FROM registrations WHERE event_id = ?",
+        [eventId],
         (err) => {
 
             if (err) {
-                return res.json({ success: false });
-            }
-
-            res.json({
-                success: true,
-                message: "Event deleted"
-            });
-
-        }
-    );
-});
-
-app.delete("/admin/user/:id", verifyToken, isAdmin, (req, res) => {
-    db.query(
-        "DELETE FROM users WHERE id = ?",
-        [req.params.id],
-        (err, result) => {
-            if (err) {
+                console.log(err);
                 return res.status(500).json({
                     success: false,
-                    message: "User deletion failed"
+                    message: "Failed to delete registrations"
                 });
             }
 
-            res.json({
-                success: true,
-                message: "User deleted successfully"
-            });
+            db.query(
+                "DELETE FROM events WHERE id = ?",
+                [eventId],
+                (err2) => {
+
+                    if (err2) {
+                        console.log(err2);
+                        return res.status(500).json({
+                            success: false,
+                            message: "Event deletion failed"
+                        });
+                    }
+
+                    res.json({
+                        success: true,
+                        message: "Event deleted successfully"
+                    });
+
+                }
+            );
+
         }
     );
+
+});
+app.delete("/admin/user/:id", verifyToken, isAdmin, (req, res) => {
+
+    const userId = req.params.id;
+
+    // Keep admin account
+    if (Number(userId) === Number(req.user.id)) {
+        return res.status(403).json({
+            success: false,
+            message: "Admin cannot be deleted"
+        });
+    }
+
+    // Delete registrations made by user first
+    db.query(
+        "DELETE FROM registrations WHERE user_id = ?",
+        [userId],
+        (err) => {
+
+            if (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Registration deletion failed"
+                });
+            }
+
+            // Delete events created by user
+            db.query(
+                "DELETE FROM events WHERE created_by = ?",
+                [userId],
+                (err2) => {
+
+                    if (err2) {
+                        return res.status(500).json({
+                            success: false,
+                            message: "Event deletion failed"
+                        });
+                    }
+
+                    // Finally delete user
+                    db.query(
+                        "DELETE FROM users WHERE id = ?",
+                        [userId],
+                        (err3) => {
+
+                            if (err3) {
+                                return res.status(500).json({
+                                    success: false,
+                                    message: "User deletion failed"
+                                });
+                            }
+
+                            res.json({
+                                success: true,
+                                message: "User deleted successfully"
+                            });
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
 });
 const PORT = process.env.PORT || 3000;
 
