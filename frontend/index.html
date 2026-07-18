@@ -22,7 +22,7 @@ if (!token) {
 
 async function loadEvents() {
 
-    const res = await fetch("http://localhost:3000/events", {
+    const res = await fetch("https://campus-event-portal-wjcw.onrender.com/events", {
         headers: {
             "Authorization": "Bearer " + token
         }

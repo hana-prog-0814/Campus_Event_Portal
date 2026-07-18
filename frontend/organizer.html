@@ -37,7 +37,7 @@ const token = localStorage.getItem("token");
 async function handleCreateEvent() {
     console.log("BUTTON CLICKED");
 
-    const res = await fetch("http://localhost:3000/events", {
+    const res = await fetch("https://campus-event-portal-wjcw.onrender.com/events", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
