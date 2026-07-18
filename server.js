@@ -7,6 +7,11 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "campus_event_secret_key";
 const app = express();
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "frontend", "login.html"));
+});
+
 app.use(express.static(path.join(__dirname, "frontend")));
 
 app.use(cors());
