@@ -118,7 +118,7 @@ function isAdmin(req, res, next) {
 
 // Test Route
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend", "index.html"));
+    res.sendFile(path.join(__dirname, "frontend", "login.html"));
 });
 app.post("/register", async (req, res) => {
 
