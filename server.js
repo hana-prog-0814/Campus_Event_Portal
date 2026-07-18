@@ -329,14 +329,15 @@ app.get("/profile", verifyToken, (req, res) => {
 app.get("/events", (req, res) => {
 
     const sql = `
-        SELECT
-            events.*,
-            users.name AS organizer_name
-        FROM events
-        JOIN users
-        ON events.created_by = users.id
-        ORDER BY event_date ASC
-    `;
+    SELECT
+        events.*,
+        users.name AS organizer_name
+    FROM events
+    JOIN users
+    ON events.created_by = users.id
+    WHERE TIMESTAMP(events.event_date, events.event_time) > NOW()
+    ORDER BY event_date ASC
+`;
 
     db.query(sql, (err, results) => {
 
