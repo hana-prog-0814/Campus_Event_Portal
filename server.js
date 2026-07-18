@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
@@ -6,6 +7,7 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "campus_event_secret_key";
 const app = express();
+app.use(express.static(path.join(__dirname, "frontend")));
 
 app.use(cors());
 app.use(express.json());
@@ -112,7 +114,7 @@ function isAdmin(req, res, next) {
 
 // Test Route
 app.get("/", (req, res) => {
-    res.send("Campus Event Management System API Running...");
+    res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
 app.post("/register", async (req, res) => {
 
